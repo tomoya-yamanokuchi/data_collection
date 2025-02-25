@@ -6,7 +6,7 @@ from service import file_copy_and_rename
 
 class RandomCtrlDataCollection:
     def __init__(self, domain_object: DomainObject):
-        self.config_icem              = domain_object.config_icem
+        self.config_icem              = domain_object.config_icem_sub
         self.xml_str                  = domain_object.xml_str
         self.xml_generator            = domain_object.xml_generator
         self.file_copy_manager        = domain_object.file_copy_manager
