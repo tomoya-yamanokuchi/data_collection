@@ -2,7 +2,7 @@ import copy
 import time
 import numpy as np
 import multiprocessing as mp
-from multiprocessing import Queue
+from typing import Any
 # from .DataCollectionPlanningDomainObjectDict import DataCollectionPlanningDomainObjectDict
 from icem_torch.icem_subparticle.forward_model_multiprocessing import PlanningQueueParamDict
 # from robel_dclaw_env.domain.environment.instance.simulation.base_environment import AbstractEnvironment
@@ -18,27 +18,32 @@ class RandomCtrlDataCollection_with_fixed_init_ctrl(BaseWorker):
              output_queue : mp.Queue,
              domain_object: DomainObject
         ):
+        print("domain_object = ", domain_object)
         self.output_queue = output_queue
         # ----
-        self.env_object              = domain_object.env_obj
-        self.config_env              = domain_object.config_env
-        self.population_sampler      = domain_object.population_sampler
-        self.trajectory_evaluator    = domain_object.trajectory_evaluator
-        self.env_data_container      = domain_object.env_data_container
-        self.env_data_repository     = domain_object.env_data_repository
-        self.config_icem             = domain_object.config_icem_sub
+        self.env_object                 = domain_object.env_obj
+        self.config_env                 = domain_object.config_env
+        self.colored_population_sampler = domain_object.colored_population_sampler
+        self.trajectory_evaluator       = domain_object.trajectory_evaluator
+        self.env_data_container         = domain_object.env_data_container
+        self.env_data_repository        = domain_object.env_data_repository
+        self.config_icem                = domain_object.config_icem_sub
         # self.xml_path                = domain_object_dict['xml_path']
         # self.TaskSpaceAbsValueObject = domain_object_dict['TaskSpaceAbsValueObject']
         # self.control_adaptor         = domain_object_dict['control_adaptor']
 
         # ---
-    def execute(self):
+    def execute(self, task_index: int, task_data: Any, total_tasks: int) -> Any:
         wait_time(const=5, seed=1)
 
-        task = self.input_queue.get()  # タスクを受け取る
-        result = f">>>Processed {task}"
+        result = f"Processed {task_data} (Task {task_index + 1}/{total_tasks})"
         self.output_queue.put(result)  # 結果を送信
-        return result
+
+        # if task is None
+        # :
+            # return None
+        # result = f" @@@ Processed {task}"
+        # self.output_queue.put(result)  # 結果を送信
 
         # data: PlanningQueueParamDict = self.queue_input.get()
         # # ---
