@@ -2,16 +2,17 @@ import time
 from typing import Type, Any
 from .DataCollectionManager import DataCollectionManager
 from multiprocessing_worker import BaseWorker
+from domain_object.builder import DomainObject
 
 class DataCollectionRunner:
     def __init__(self,
-            num_workers : int,
-            worker_class: Type[BaseWorker],
-            *worker_args: Any
+            num_workers  : int,
+            worker_class : Type[BaseWorker],
+            domain_object: DomainObject,
         ):
-        self.manager = DataCollectionManager(num_workers, worker_class, *worker_args)
+        self.manager = DataCollectionManager(num_workers, worker_class, domain_object)
 
-    def run(self, tasks):
+    def run(self, tasks: Any):
         self.manager.start_workers()
         for task in tasks:
             self.manager.add_task(task)
